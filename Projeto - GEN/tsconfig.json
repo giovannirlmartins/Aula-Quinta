@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "target": "es6",                   // Define o nível de compatibilidade de JavaScript
+    "module": "commonjs",               // Define o módulo como 'commonjs' (usado pelo Node.js)
+    "outDir": "./dist",                 // Pasta de saída para os arquivos compilados
+    "rootDir": "./src",                 // Define a pasta de código-fonte
+    "strict": true,                     // Habilita verificações de tipo estritas
+    "esModuleInterop": true             // Facilita a importação de módulos
+  },
+  "include": ["src/*/"]
+}

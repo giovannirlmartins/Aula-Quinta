@@ -11,6 +11,6 @@ export interface Estatistica {
     indicador_pobreza: number;
     indice_escolar: number;
     taxa_desemprego: number;
-    disparidade_salarial: number;
-  }
+    disparidade_salarial: number; 
+}
   

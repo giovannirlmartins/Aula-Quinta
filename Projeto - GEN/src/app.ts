@@ -1,13 +1,12 @@
 import express from 'express';
-import dotenv from 'dotenv';
-
-dotenv.config();
+import cors from 'cors';
 
 const app = express();
-app.use(express.json());
 
-app.get('/', (req, res) => {
-  res.send('Servidor funcionando!');
-});
+app.use(express.json());
+app.use(cors());
+
+// Aqui você pode definir suas rotas, por exemplo:
+app.use('/ongs', );
 
 export default app;

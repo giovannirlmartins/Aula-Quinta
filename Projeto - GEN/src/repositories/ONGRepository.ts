@@ -1,39 +1,53 @@
 import pool from '../config/database';
 import { ONG } from '../models/ONG';
 
-export class ONGRepository {
-    static criar(ongData: ONG) {
-        throw new Error('Method not implemented.');
+class ONGRepository {
+  // Método para criar uma nova ONG
+  async criar(ong: ONG) {
+    try {
+      const result = await pool.query(
+        `INSERT INTO ongs (cnpj_ong, nome, endereco, telefone, email, data_criacao, regiao_atuacao, descricao, senha_acesso_ong) 
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) 
+         RETURNING *`,
+        [
+          ong.cnpj_ong,
+          ong.nome,
+          ong.endereco,
+          ong.telefone,
+          ong.email,
+          ong.data_criacao,
+          ong.regiao_atuacao,
+          ong.descricao,
+          ong.senha_acesso_ong
+        ]
+      );
+      return result.rows[0]; // Retorna a ONG criada
+    } catch (error) {
+      console.error("Erro ao criar ONG no banco:", error); // Log de erro
+      throw new Error('Erro ao criar ONG');
     }
-    async criar(ong: ONG) {
-        const result = await pool.query(
-          'INSERT INTO ongs (cnpj_ong, nome, endereco, telefone, email, data_criacao, regiao_atuacao, descricao, senha_acesso_ong) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *',
-          [
-            ong.cnpj_ong,
-            ong.nome,
-            ong.endereco,
-            ong.telefone,
-            ong.email,
-            ong.data_criacao,
-            ong.regiao_atuacao,
-            ong.descricao,
-            ong.senha_acesso_ong
-          ]
-        );
-        return result.rows[0];
-      }
-  async getAllProjects(id_ong: number): Promise<any> {
-    const query = 'SELECT * FROM projeto WHERE id_ong = $1';
-    const result = await pool.query(query, [id_ong]);
-    return result.rows;
   }
 
-  async registerProject(id_ong: number, titulo: string, descricao: string, data_inicio: Date, data_final: Date) {
-    const query = `INSERT INTO projeto (id_ong, titulo, descricao, data_inicio, data_final)
-                   VALUES ($1, $2, $3, $4, $5) RETURNING *`;
-    const result = await pool.query(query, [id_ong, titulo, descricao, data_inicio, data_final]);
-    return result.rows[0];
-  }
-// Colocar outros métodos abaixo
+  // Método para consultar uma ONG por ID
+  async consultarPorId(id_ong: number) {
+    try {
+      const result = await pool.query(
+        `SELECT * FROM ongs WHERE id_ong = $1`, [id_ong]
+      );
+      return result.rows[0]
+    } catch (error) {
+        console.error("Erro ao criar ONG no banco:", error); // Log de erro
+        throw new Error('Erro ao criar ONG');
+      }
+    }
+    async listarTodas() {
+      try {
+        const result = await pool.query('SELECT * FROM ongs');
+        return result.rows; // Retorna todas as ONGs
+      } catch (error) {
+        console.error("Erro ao listar ONGs:", error); // Log de erro
+        throw new Error('Erro ao listar ONGs');
+      }
+    }
 }
 export default new ONGRepository();

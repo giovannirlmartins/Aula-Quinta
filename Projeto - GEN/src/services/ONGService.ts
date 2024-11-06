@@ -1,20 +1,37 @@
+import ONGRepository from '../repositories/ONGRepository';
 import { ONG } from '../models/ONG';
-import { ONGRepository } from '../repositories/ONGRepository';
 
-export class ONGService {
-  private ongRepository = new ONGRepository();
+class ONGService {
+  // Método para criar uma nova ONG
   async criar(ongData: ONG) {
-    return ONGRepository.criar(ongData);
-  }
-  async listarProjetos(id_ong: number) {
-    return this.ongRepository.getAllProjects(id_ong);
-  }
-
-  async registrarProjeto(id_ong: number, titulo: string, descricao: string, data_inicio: Date, data_final: Date) {
-    return this.ongRepository.registerProject(id_ong, titulo, descricao, data_inicio, data_final);
+    try {
+      return await ONGRepository.criar(ongData); // Chama o repositório para inserir a ONG
+    } catch (error) {
+      console.error("Erro no serviço de ONG:", error); // Log do erro
+      throw new Error('Erro ao criar ONG');
+    }
   }
 
-// Colocar outros métodos abaixo
+  // Método para consultar uma ONG por ID
+  async consultarPorId(id_ong: number) {
+    try {
+      return await ONGRepository.consultarPorId(id_ong); // Consulta a ONG por ID
+    } catch (error) {
+      console.error("Erro no serviço ao consultar ONG:", error);
+      throw new Error('Erro ao consultar ONG');
+    }
+  }
+
+  // Método para listar todas as ONGs
+  async listarTodas() {
+    try {
+      return await ONGRepository.listarTodas(); // Retorna todas as ONGs
+    } catch (error) {
+      console.error("Erro no serviço ao listar ONGs:", error);
+      throw new Error('Erro ao listar ONGs');
+    }
+  }
 }
 
 export default new ONGService();
+

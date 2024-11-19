@@ -10,6 +10,15 @@ class ProjetoRepository {
     return result.rows[0];
   }
 
+  async listarTodosProjetos() {
+    try {
+      const result = await pool.query('SELECT * FROM projetos');
+      return result.rows; // Retorna todos os projetos
+    } catch (error) {
+      console.error("Erro ao listar os projetos:", error); // Log de erro
+      throw new Error('Erro ao listar os projetos');
+    }
+  }
   // Adicione outros métodos conforme necessário
 }
 

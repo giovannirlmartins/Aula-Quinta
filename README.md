@@ -4,22 +4,23 @@
 ### Descrição do Projeto:
  O Gender Equality Network (*GEN*) é uma aplicação voltada para a promoção da igualdade de gênero no mercado de trabalho, com foco no setor de tecnologia. O projeto conecta organizações não governamentais (ONGs), empresas e órgãos governamentais para implementar ações que promovam oportunidades equitativas.
 
-Com a interface amigável e recursos robustos, o aplicativo permite:
+### Com a interface amigável e recursos robustos, o aplicativo permite:
 
 Cadastro de organizações 
-> (ONGs, empresas e instituições).
+* (ONGs, empresas e instituições).
 Consulta automática de dados via API 
-> (como o CEP).
+* (como o CEP).
 Visualização e compartilhamento de relatórios sobre iniciativas de igualdade de gênero.
-Funcionalidades
-📌 Cadastro Inteligente
-Busca automática de endereço usando a API ViaCEP.
+
+### Funcionalidades:
+* 📌 Cadastro Inteligente
+> Busca automática de endereço usando a API ViaCEP.
 Categorias específicas para ONGs e empresas.
-📊 Painel de Relatórios
-Gerenciamento de dados e indicadores.
+* 📊 Painel de Relatórios
+> Gerenciamento de dados e indicadores.
 Exibição de informações personalizadas para parceiros.
-🔗 Conexão entre Instituições
-Rede integrada para colaboração entre ONGs, empresas e o governo.
+* 🔗 Conexão entre Instituições
+> Rede integrada para colaboração entre ONGs, empresas e o governo.
 
 ## Tecnologias Utilizadas:
 ### Frontend:

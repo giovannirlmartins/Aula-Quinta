@@ -6,11 +6,11 @@
 
 ### Com a interface amigável e recursos robustos, o aplicativo permite:
 
-> Cadastro de organizações 
-* (ONGs, empresas e instituições).
-> Consulta automática de dados via API 
-* (como o CEP).
-> Visualização e compartilhamento de relatórios sobre iniciativas de igualdade de gênero.
+* Cadastro de organizações 
+> (ONGs, empresas e instituições).
+* Consulta automática de dados via API 
+> (como o CEP).
+* Visualização e compartilhamento de relatórios sobre iniciativas de igualdade de gênero.
 
 ### Funcionalidades:
 * 📌 Cadastro Inteligente

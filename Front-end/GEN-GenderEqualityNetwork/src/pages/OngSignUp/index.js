@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { View, Text, Image, StyleSheet, TouchableOpacity, TextInput, Alert, KeyboardAvoidingView, ScrollView, Platform } from 'react-native';
 import Colours from '../../../assets/colours';
 import { useNavigation } from "@react-navigation/native";
+import SignUp from "../signup";
 
 export default function OngSignUp() {
   const navigation = useNavigation();
@@ -13,7 +14,7 @@ export default function OngSignUp() {
   const [senha, setSenha] = useState(null);
   const [senhaTester, setSenhaTester] = useState(null);
 
-  function Validation() {
+  function validation() {
     if (ongName && phone && email && emailTester && senha && senhaTester) {
       if (email === emailTester) {
         if (senha === senhaTester) {
@@ -106,7 +107,7 @@ export default function OngSignUp() {
           </Text>
           <TouchableOpacity
             style={styles.signUpButton}
-            onPress={() => Validation()}
+            onPress={() => validation()}
           >
             <Text style={styles.textButton}>Próximo</Text>
           </TouchableOpacity>
@@ -122,7 +123,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colours.backgroundColour,
   },
   image: {
-    width: '50%',
+    width: '60%',
     alignSelf: 'center',
     marginTop: 20,
     paddingBottom: -200,

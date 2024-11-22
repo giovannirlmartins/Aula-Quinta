@@ -6,6 +6,7 @@ import {
   Alert,
   Image,
   KeyboardAvoidingView,
+  ScrollView,
   TouchableOpacity,
   StyleSheet,
   Platform
@@ -24,7 +25,7 @@ export default function OngSignUp2() {
   const [estado, setEstado] = useState(null);
 
   function Validationsign() {
-    if(cep != '' && logradouro != '' && numero != '' && bairro != '' && cidade != '' && estado != '')
+    if(cep != null && logradouro != null && numero != null && bairro != null && cidade != null && estado != null)
       {
         home();
       }
@@ -139,24 +140,22 @@ export default function OngSignUp2() {
 const styles = StyleSheet.create({
   container: { 
     flex: 1,
-    backgroundColor: Colours.backgroundColour,
-    justifyContent: 'center',
-    alignItems: 'center',
-    position:'relative',
-    zIndex: 0
+    backgroundColor: Colours.backgroundColour
   },
 
   imageContainer:{
-    width: '60%',
+    width: '50%',
     justifyContent: 'center',
     alignItems: 'center',
   },
-
-  image:{
-    width: '50%',
-    marginVertical: -100,
-
+  image: {
+    height: 900,
+    width: "80%",
+    alignSelf: 'center',
+    marginTop: -140,
+    marginBottom: -500 
   },
+
   formcontainer: {
     marginHorizontal: 40,
     margin: 8,  },

@@ -4,7 +4,6 @@ import {
   Text,
   TextInput,
   Alert,
-  ScrollView,
   Image,
   TouchableOpacity,
   StyleSheet,
@@ -23,7 +22,7 @@ export default function SignUp() {
   const [estado, setEstado] = useState("");
 
   function Validationsign() {
-    if(cep != null && logradouro != null && numero != null && bairro != null && cidade != null && estado != null)
+    if(cep != '' && logradouro != '' && numero != '' && bairro != '' && cidade != '' && estado != '')
       {
         home();
       }
@@ -60,13 +59,14 @@ export default function SignUp() {
   };
 
   return (
-    <ScrollView style={{ flex: 1, backgroundColor: Colours.backgroundColour }}>
       <View style={styles.container}>
-        <Image
-          source={require("../../../assets/images/logoGen.png")}
-          style={styles.image}
-          resizeMode="contain"
-        />
+            <Image
+            source={require('../../../assets/images/logoGenCad.png')}
+            style={styles.image}  
+            resizeMode="contain"          
+            />
+      
+      <View style={styles.formcontainer}>
         <Text style={styles.text}>Insira seu CEP para buscar o endereço:</Text>
 
         <TextInput
@@ -122,49 +122,62 @@ export default function SignUp() {
         style={styles.button}
         onPress={() => Validationsign()}
         >
-          <Text style={styles.buttonText}>Cadastrar</Text>
+        <Text style={styles.buttonText}>Cadastrar</Text>
         </TouchableOpacity>
       </View>
-    </ScrollView>
+      </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 0,
-    margin: 0,
-    padding: 0,
+  container: { 
+    flex: 1,
+    backgroundColor: Colours.backgroundColour,
+    justifyContent: 'center',
+    alignItems: 'center',
+    position:'relative',
+    zIndex: 0
   },
-  image: {
-    height: 900,
-    width: "100%",
-    marginTop: -100,
-    marginBottom: -500 
+
+  imageContainer:{
+    width: '60%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  image:{
+    width: '50%',
+    marginVertical: -100,
+
+  },
+  formcontainer: {
+    marginHorizontal: 40,
+    margin: 8,
   },
   text: {
-    fontSize: 20,
+    fontSize: 15,
     color: "#fff",
     fontWeight: "bold",
     textAlign: "center",
-    margin: 20,
+    margin: 15,
   },
   input:{
     backgroundColor: Colours.lightBlue,
-    margin: 5,
-    padding: 14,
-    marginHorizontal: 50,
+    margin: 8,
+    marginVertical: 12,
+    padding: 10,
     borderRadius: 25,
     paddingLeft: 15,
   },
   button: {
-    backgroundColor: Colours.lightBlue,
-    borderRadius: 10,
+    margin: 10,
+    padding: 12,
+    backgroundColor: Colours.headerColour,
     alignItems: "center",
-    margin: 5,
-    padding: 14,
-    marginHorizontal: 50,
-    borderRadius: 25,
-    paddingLeft: 15,
+    paddingHorizontal: 80,
+    borderRadius: 40,
+    alignSelf: "center",
+    paddingVertical: 5,
   },
   buttonText: {
     color: "#000",

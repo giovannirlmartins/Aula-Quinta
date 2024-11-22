@@ -6,21 +6,23 @@ import {
   Alert,
   ScrollView,
   Image,
+  KeyboardAvoidingView,
   TouchableOpacity,
   StyleSheet,
+  Platform
 } from "react-native";
 import Colours from "../../../assets/colours";
 import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
 
-export default function SignUp() {
+export default function OngSignUp2() {
   const navigation = useNavigation();
-  const [cep, setCep] = useState("");
-  const [logradouro, setLogradouro] = useState("");
-  const [numero, setNumero]  = useState ("");
-  const [bairro, setBairro] = useState("");
-  const [cidade, setCidade] = useState("");
-  const [estado, setEstado] = useState("");
+  const [cep, setCep] = useState(null);
+  const [logradouro, setLogradouro] = useState(null);
+  const [numero, setNumero]  = useState (null);
+  const [bairro, setBairro] = useState(null);
+  const [cidade, setCidade] = useState(null);
+  const [estado, setEstado] = useState(null);
 
   function Validationsign() {
     if(cep != null && logradouro != null && numero != null && bairro != null && cidade != null && estado != null)
@@ -60,8 +62,12 @@ export default function SignUp() {
   };
 
   return (
-    <ScrollView style={{ flex: 1, backgroundColor: Colours.backgroundColour }}>
-      <View style={styles.container}>
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 80 : 0}
+    >
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <Image
           source={require("../../../assets/images/logoGen.png")}
           style={styles.image}
@@ -124,16 +130,15 @@ export default function SignUp() {
         >
           <Text style={styles.buttonText}>Cadastrar</Text>
         </TouchableOpacity>
-      </View>
-    </ScrollView>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 0,
-    margin: 0,
-    padding: 0,
+    flex: 1,
+    backgroundColor: Colours.backgroundColour,
   },
   image: {
     height: 900,

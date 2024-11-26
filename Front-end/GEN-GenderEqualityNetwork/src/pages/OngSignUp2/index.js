@@ -5,24 +5,27 @@ import {
   TextInput,
   Alert,
   Image,
+  KeyboardAvoidingView,
+  ScrollView,
   TouchableOpacity,
   StyleSheet,
+  Platform
 } from "react-native";
 import Colours from "../../../assets/colours";
 import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
 
-export default function SignUp() {
+export default function OngSignUp2() {
   const navigation = useNavigation();
-  const [cep, setCep] = useState("");
-  const [logradouro, setLogradouro] = useState("");
-  const [numero, setNumero]  = useState ("");
-  const [bairro, setBairro] = useState("");
-  const [cidade, setCidade] = useState("");
-  const [estado, setEstado] = useState("");
+  const [cep, setCep] = useState(null);
+  const [logradouro, setLogradouro] = useState(null);
+  const [numero, setNumero]  = useState (null);
+  const [bairro, setBairro] = useState(null);
+  const [cidade, setCidade] = useState(null);
+  const [estado, setEstado] = useState(null);
 
   function Validationsign() {
-    if(cep != '' && logradouro != '' && numero != '' && bairro != '' && cidade != '' && estado != '')
+    if(cep != null && logradouro != null && numero != null && bairro != null && cidade != null && estado != null)
       {
         home();
       }
@@ -59,14 +62,18 @@ export default function SignUp() {
   };
 
   return (
-      <View style={styles.container}>
-            <Image
-            source={require('../../../assets/images/logoGenCad.png')}
-            style={styles.image}  
-            resizeMode="contain"          
-            />
-      
-      <View style={styles.formcontainer}>
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 80 : 0}
+    >
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+        <Image
+          source={require("../../../assets/images/logoGen.png")}
+          style={styles.image}
+          resizeMode="contain"
+        />
+        <View style={styles.formcontainer}>
         <Text style={styles.text}>Insira seu CEP para buscar o endereço:</Text>
 
         <TextInput
@@ -124,36 +131,34 @@ export default function SignUp() {
         >
         <Text style={styles.buttonText}>Cadastrar</Text>
         </TouchableOpacity>
-      </View>
-      </View>
+        </View>
+        </ScrollView>
+        </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
   container: { 
     flex: 1,
-    backgroundColor: Colours.backgroundColour,
-    justifyContent: 'center',
-    alignItems: 'center',
-    position:'relative',
-    zIndex: 0
+    backgroundColor: Colours.backgroundColour
   },
 
   imageContainer:{
-    width: '60%',
+    width: '50%',
     justifyContent: 'center',
     alignItems: 'center',
   },
-
-  image:{
-    width: '50%',
-    marginVertical: -100,
-
+  image: {
+    height: 900,
+    width: "80%",
+    alignSelf: 'center',
+    marginTop: -140,
+    marginBottom: -500 
   },
+
   formcontainer: {
     marginHorizontal: 40,
-    margin: 8,
-  },
+    margin: 8,  },
   text: {
     fontSize: 15,
     color: "#fff",

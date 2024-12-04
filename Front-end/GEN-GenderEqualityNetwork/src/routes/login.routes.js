@@ -8,7 +8,6 @@ import Welcome3 from "../pages/welcome3";
 import SignIn from "../pages/signin";
 import SignUp from "../pages/signup";
 import OngSignUp from "../pages/OngSignUp";
-import OngSignUp2 from "../pages/OngSignUp2";
 import HomeScreen from "../pages/app/home";
 import PostScreen from "../pages/app/post";
 import ProfileScreen from "../pages/app/profile";
@@ -63,6 +62,7 @@ function MyApp() {
 export default function LoginRoutes() {
     return (
         <Stack.Navigator>
+
             <Stack.Screen
                 name="Welcome1"
                 component={Welcome1}
@@ -91,11 +91,6 @@ export default function LoginRoutes() {
             <Stack.Screen
                 name="OngSignUp"
                 component={OngSignUp}
-                options={{ headerShown: false }}
-            />
-            <Stack.Screen
-                name="OngSignUp2"
-                component={OngSignUp2}
                 options={{ headerShown: false }}
             />
             <Stack.Screen

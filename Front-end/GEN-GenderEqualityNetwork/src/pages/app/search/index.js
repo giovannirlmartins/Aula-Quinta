@@ -12,16 +12,18 @@ import {
   watchPositionAsync,
   LocationAccuracy
 } from 'expo-location';
+import axios from 'axios';
 
 export default function SearchScreen() {
 
-  const [selectedValue, setSelectedValue] = useState(''); // Estado inicial
-
-  const handleSubmit = () => {
-    console.log('Valor selecionado:', selectedValue);
-  };
-
-  const [location, setLocation] = useState(null); // Remove a tipagem explícita para testes
+  const [selectedValue, setSelectedValue] = useState('');
+  const [bairro, setBairro] = useState(null);
+  const [cidade, setCidade] = useState(null);
+  const [estado, setEstado] = useState(null);
+  const [location, setLocation] = useState(null);
+  const [isVisible, setIsVisible] = useState(true);
+  const [isVisibleMap, setIsVisibleMap] = useState(true);
+  const [isVisibleInfo, setIsVisibleInfo] = useState(false);
 
 
   async function requestLocationPermissions() {
@@ -52,6 +54,51 @@ export default function SearchScreen() {
     });
   }, []);
 
+  const fetchAddress = async () => {
+    if (!cep || cep.length < 8) {
+      Alert.alert("Erro", "Por favor, insira um CEP válido com 8 dígitos.");
+      return;
+    }
+
+    try {
+      const response = await axios.get(`https://viacep.com.br/ws/${cep}/json/`);
+      console.log(response.data); // Debug: Verificar retorno da API
+      if (response.data.erro) {
+        Alert.alert("Erro", "CEP inválido ou não encontrado.");
+      } else {
+        setBairro(response.data.bairro || "");
+        setCidade(response.data.localidade || "");
+        setEstado(response.data.uf || "");
+      }
+    
+      
+    } catch (error) {
+      Alert.alert("Erro", "Não foi possível buscar o endereço.");
+    }
+  };
+  
+  function searchBy(value) {
+    const visibleOptions = ['cep', 'bairro', 'cidade', 'estado'];
+    setIsVisible(visibleOptions.includes(value));
+  }
+  
+
+  function search(){
+    if (selectedValue == 'cep'){
+      fetchAddress();
+      setIsVisibleMap(false);
+      setIsVisibleInfo(true);
+      searchByBairro();
+      searchByCidade();
+      searchByEstado();
+
+    }
+  }
+
+  function searchByBairro(){
+    
+  }
+
 
   return (
     <View style={styles.Container}>
@@ -66,7 +113,10 @@ export default function SearchScreen() {
           <View style={styles.pickerContainer}>
             <Picker
               selectedValue={selectedValue}
-              onValueChange={(itemValue) => setSelectedValue(itemValue)}
+              onValueChange={(value) => {
+                setSelectedValue(value); 
+                searchBy(value); 
+              }}
               style={styles.picker}
             >
               <Picker.Item style={styles.item} label="CEP" value="cep" />
@@ -90,6 +140,7 @@ export default function SearchScreen() {
           />
         </View>
 
+        {isVisible && (
         <View style={styles.searchBar}>
           {/* Input de texto com ícone de pesquisa */}
           <View style={styles.searchInputContainer}>
@@ -97,12 +148,16 @@ export default function SearchScreen() {
               style={styles.textInput} 
               placeholder="Digite sua pesquisa"
             />
-            <TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => search()}
+            >
               <FontAwesome name="search" size={20} color={Colours.backgroundColour} style={styles.searchIcon} />
             </TouchableOpacity>          
           </View>
-        </View>
+        </View>)}
 
+
+        {isVisibleMap && (
         <View style={styles.mapContainer}>
         {
             location &&
@@ -121,7 +176,7 @@ export default function SearchScreen() {
               />
             </MapView>
           }
-        </View>
+        </View>)}
 
       </ScrollView>
     </View>

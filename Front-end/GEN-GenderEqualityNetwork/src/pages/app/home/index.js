@@ -1,147 +1,173 @@
-import React from "react";
-import { View, Text, StatusBar, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect } from "react"; // Certifique-se de importar useEffect
+import { View, Text, StatusBar, Image, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import Colours from '../../../../assets/colours';
-import { useNavigation } from "@react-navigation/native";
-import MapView from 'react-native-maps';
+import MapView, { Marker } from 'react-native-maps';
+import Header from '../../../../components/header';
+import {
+  requestForegroundPermissionsAsync,
+  getCurrentPositionAsync,
+  LocationObject,
+  watchPositionAsync,
+  LocationAccuracy
+} from 'expo-location';
 
-export default function Home() {
-  const navigation = useNavigation();
+export default function HomeScreen() {
+
+  const [location, setLocation] = useState(null); // Remove a tipagem explícita para testes
+
+
+  async function requestLocationPermissions() {
+    try {
+      const { granted } = await requestForegroundPermissionsAsync();
+      if (!granted) {
+        console.log("Permissão de localização não concedida.");
+        return;
+      }
+      const currentPosition = await getCurrentPositionAsync();
+      setLocation(currentPosition);
+    } catch (error) {
+      console.error("Erro ao solicitar permissão de localização:", error);
+    }
+  }
+
+  useEffect(() => {
+    requestLocationPermissions();
+  }, []);
+
+  useEffect(() => {
+    watchPositionAsync({
+      accuracy: LocationAccuracy.Highest,
+      timeInterval: 1000,
+      distanceInterval: 1
+    }, (response) => {
+      setLocation(response);
+    });
+  }, []);
 
   return (
-    <View style={styles.container}>
-      
-      <StatusBar hidden={true} />
+    <View style={styles.Container}>
+      <Header />
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+        <Text style={styles.title}>Novidades</Text>
 
-      <View style={styles.header}>
-        <View>
-           <Image
-           //PRECISO RETORNAR A FOTO DE PERFIL
-            source={require('../../../../assets/images/profile.png')}
-            style={styles.pictureProfile}
-            resizeMode="contain"
-            /> 
-            
-            {/* PRECISO RETORNAR O NOME DO PERFIL, SERÁ ASSIM? -> <Text>{ProjectName}</Text> */}
-            <Text style={styles.projectName}>PROJETO VIVER BEM</Text>
+        <View style={styles.newsContainer}>
+          {[1, 2].map((item) => (
+            <View key={item} style={styles.card}>
+              <Image
+                source={{ uri: 'https://via.placeholder.com/120' }}
+                style={styles.image}
+              />
+              <View style={styles.textContainer}>
+                <Text style={styles.cardTitle}>Título {item}</Text>
+                <Text style={styles.cardDescription}>
+                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Eos amet itaque inventore quidem natus animi
+                  pariatur.
+                </Text>
+              </View>
+            </View>
+          ))}
+        </View>
+        <TouchableOpacity>
+          <Text style={styles.seeMore}>Mais...</Text>
+        </TouchableOpacity>
+
+        <View style={styles.mapContainer}>
+          <Text style={styles.title}>Localização</Text>
+
+          {
+            location &&
+            <MapView style={styles.map} 
+            initialRegion={{
+              latitude: location.coords.latitude,
+              longitude: location.coords.longitude,
+              latitudeDelta: 0.005,
+              longitudeDelta: 0.005
+            }}>
+              <Marker
+                coordinate={{
+                  latitude: location.coords.latitude,
+                  longitude: location.coords.longitude
+                }}
+              />
+            </MapView>
+          }
+          
+        
+        
         </View>
 
-        <View>
-          {/* PRECISO RETORNAR A DESCRIÇÃO */}
-          <Text style={styles.descriptionProject}>O projeto viver bem fica localizado na rua salgadinho, 75 em Arthur Lundgren 2, Paulista e atua para amenizar os efeitos da desigualdade de gênero.</Text>
-        </View>
-
-        <View>
-          <Image 
-          source={require('../../../../assets/images/bell.png')}
-          style={styles.bell}
-          resizeMode="contain"
-          />
-          <Image 
-          source={require('../../../../assets/images/calendar.png')}
-          style={styles.calendar}
-          resizeMode="contain"
-          />
-        </View>
-      {/* FIM DO HEADER */}
-      </View>
-
-      <View style={styles.newsContainer}>
-        <Text>Novidades</Text>
-        <View style={styles.news}>
-
-        </View>
-        <View style={styles.news}>
-
-        </View>
-        <TouchableOpacity><Text>Ver mais</Text></TouchableOpacity>
-      </View>
-
-      <View style={styles.mapContainer}>
-        <Text>Localização</Text>
-        <MapView style={styles.map} />
-      </View>
-
-      
-      
+        <View style={styles.footer}></View>
+      </ScrollView>
     </View>
   );
 }
 
-const styles = StyleSheet.create({ 
-  container: { 
+const styles = StyleSheet.create({
+  Container: {
     flex: 1,
-    backgroundColor: Colours.backgroundColour
+    backgroundColor: Colours.backgroundColour,
+    position: "relative"
   },
-
-  header:{
-    backgroundColor: Colours.headerColour,
-    borderRadius: 20,
-    width: '100%',
-    padding: '30%',
-    zIndex: 1
+  newsContainer: {
+    margin: 10,
+    flexDirection: 'row',
+    alignSelf: 'center'
   },
-
-  pictureProfile: {
-    position: 'absolute',
-    width: '60%',
-    top: -330,
-    left: -90,
-    padding: 0,
-    margin: 0,
-    border: 0,
-    zIndex: 2 // Garante que a imagem fique na frente da view board
-  },
-
-  projectName: {
-    width: '90%',
-    fontSize: 25,
-    fontWeight: 'bold',
-    top: -55,
-    left: 20,
-    color: Colours.offWhite,
-    position: 'absolute', // Faz a imagem flutuar
-    zIndex: 1 // Certifica que a imagem está acima de todas as views
-  },
-
-  descriptionProject:{
-    width: '150%',
-    fontSize: 10,
-    top: 40,
-    left: -80,
-    color: Colours.offWhite,
-    position: 'absolute',
-    zIndex: 1
-  },
-
-  bell:{
-    position: 'absolute',
-    width: '17%',
-    top: -355,
-    right: -90,
-    zIndex: 3
-  },
-  calendar: {
-    position: 'absolute',
-    top: -230,
-    right: -95,
-    width: '25%',
-    zIndex: 3
-  },
-
-  news:{
-    width: '45%',
-    margin: 20,
-    padding: 50,
+  card: {
+    flexDirection: 'column',
+    alignItems: 'flex-start',
     backgroundColor: Colours.offWhite,
+    padding: 16,
+    width: '48%',
+    marginHorizontal: 5,
+    borderRadius: 8,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    shadowOffset: { width: 0, height: 2 },
   },
-
-  mapContainer:{
-    
+  image: {
+    width: '100%',
+    height: 120,
+    marginRight: 16,
+    borderRadius: 6,
+  },
+  textContainer: {
+    flex: 1,
+  },
+  cardTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginVertical: 8,
+    color: Colours.backgroundColour,
+  },
+  cardDescription: {
+    fontSize: 14,
+    color: Colours.backgroundColour,
+  },
+  seeMore: {
+    color: Colours.offWhite,
+    textAlign: 'right',
+    marginHorizontal: 16,
+    marginBottom: 0
+  },
+  title: {
+    fontSize: 16,
+    color: Colours.offWhite,
+    margin: 16,
+    marginBottom: 0,
+  },
+  mapContainer: {
+    marginTop: 0,
+    marginBottom: 10,
   },
   map: {
-    marginHorizontal: 20,
-    width: '90%',
-    height: '30%',
+    marginHorizontal: 16,
+    width: '93%',
+    height: '55%',
     marginTop: 10,
+  },
+  footer: {
+    padding: 140,
   },
 });

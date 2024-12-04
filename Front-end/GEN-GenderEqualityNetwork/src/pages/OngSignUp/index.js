@@ -1,11 +1,21 @@
 import React, { useState } from "react";
-import { View, Text, Image, StyleSheet, TouchableOpacity, TextInput, Alert, KeyboardAvoidingView, ScrollView, Platform } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity, TextInput, Alert, KeyboardAvoidingView, ScrollView, Platform, AppState } from 'react-native';
 import Colours from '../../../assets/colours';
 import { useNavigation } from "@react-navigation/native";
-import SignUp from "../signup";
+import { supabase } from '../../lib/supabase';
+import axios from "axios";
+
+AppState.addEventListener('change', (state) => {
+  if (state === 'active') {
+    supabase.auth.startAutoRefresh()
+  } else {
+    supabase.auth.stopAutoRefresh()
+  }
+})
 
 export default function OngSignUp() {
   const navigation = useNavigation();
+  const [idUsuario, setIdUsuario] = useState(null);
   const [ongName, setOngName] = useState(null);
   const [ongCnpj, setOngCnpj] = useState(null);
   const [phone, setPhone] = useState(null);
@@ -13,13 +23,46 @@ export default function OngSignUp() {
   const [emailTester, setEmailTester] = useState(null);
   const [senha, setSenha] = useState(null);
   const [senhaTester, setSenhaTester] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [cep, setCep] = useState(null);
+  const [logradouro, setLogradouro] = useState(null);
+  const [numero, setNumero]  = useState (null);
+  const [bairro, setBairro] = useState(null);
+  const [cidade, setCidade] = useState(null);
+  const [estado, setEstado] = useState(null);
+
+  const fetchAddress = async () => {
+    if (!cep || cep.length < 8) {
+      Alert.alert("Erro", "Por favor, insira um CEP válido com 8 dígitos.");
+      return;
+    }
+
+    try {
+      const response = await axios.get(`https://viacep.com.br/ws/${cep}/json/`);
+      console.log(response.data); // Debug: Verificar retorno da API
+      if (response.data.erro) {
+        Alert.alert("Erro", "CEP inválido ou não encontrado.");
+      } else {
+        setLogradouro(response.data.logradouro || "");
+        setNumero(response.data.numero || "");
+        setBairro(response.data.bairro || "");
+        setCidade(response.data.localidade || "");
+        setEstado(response.data.uf || "");
+      }
+    
+      
+    } catch (error) {
+      Alert.alert("Erro", "Não foi possível buscar o endereço.");
+    }
+  };
+  
 
   function validation() {
-    if (ongName && phone && email && emailTester && senha && senhaTester) {
+    if (ongName && phone && email && emailTester && senha && senhaTester && cep && logradouro && numero && bairro && cidade && estado) {
       if (email === emailTester) {
         if (senha === senhaTester) {
           if (senha.length > 7) {
-            signUp();
+            createId();
           } else {
             Alert.alert("A senha precisa ter no mínimo 8 caracteres");
           }
@@ -38,8 +81,55 @@ export default function OngSignUp() {
     }
   }
 
-  function signUp() {
-    navigation.navigate('OngSignUp2');
+  function createId() {
+    setIdUsuario(Math.random());
+    console.log("id criado", idUsuario);
+    insertData();  // SERIAL PRIMARY KEY
+  }
+
+  async function insertData() {
+      
+    const { data, error } = await supabase.from('usuarios').insert([
+      { cnpj: ongCnpj,
+        nome: ongName, 
+        telefone: phone,
+        email: email,
+        id_usuario: idUsuario,
+        cep: cep,
+        logradouro: logradouro,
+        numero: numero,
+        bairro: bairro,
+        cidade: cidade,
+        estado: estado
+      },
+    ]).select()
+      
+    if (error){ 
+      Alert.alert(error.message);
+    }
+    else {
+      Alert.alert('Dados adicionados com sucesso');
+      signUp();
+    }
+  }    
+
+  async function signUp() {
+    setLoading(true)
+    const { data: { session }, error, } = await supabase.auth.signUp({
+      email: email,
+      password: senha,
+    })
+
+    if (error) {
+      Alert.alert(error.message)
+      Alert.alert('Usuário não criado')
+      navigation.navigate('SignIn')
+    }
+    if (!session) {
+      Alert.alert('Cadastrado com sucesso', 'Verifique seu e-mail.');
+      navigation.navigate('SignIn');       
+    }
+    setLoading(false)    
   }
 
   return (
@@ -76,6 +166,57 @@ export default function OngSignUp() {
             keyboardType="numeric"
             style={styles.input}
           />
+
+          <TextInput
+            style={styles.input}
+            placeholder="Digite o CEP"
+            placeholderTextColor="#808080"
+            keyboardType="numeric"
+            value={cep}
+            onChangeText={setCep}
+            onBlur={fetchAddress} // Busca ao sair do campo
+          />
+
+          <TextInput
+            style={styles.input}
+            placeholder="Logradouro"
+            placeholderTextColor="#808080"
+            value={logradouro}
+            onChangeText={setLogradouro}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Número do prédio"
+            placeholderTextColor="#808080"
+            value={numero}
+            onChangeText={setNumero}
+          />
+
+          <TextInput
+            style={styles.input}
+            placeholder="Bairro"
+            placeholderTextColor="#808080"
+            value={bairro}
+            onChangeText={setBairro}
+          />
+
+          <TextInput
+            style={styles.input}
+            placeholder="Cidade"
+            placeholderTextColor="#808080"
+            value={cidade}
+            onChangeText={setCidade}
+          />
+
+          <TextInput
+            style={styles.input}
+            placeholder="Estado"
+            placeholderTextColor="#808080"
+            value={estado}
+            onChangeText={setEstado}
+          />
+
+
           <TextInput
             placeholder="Email"
             onChangeText={setEmail}
@@ -125,7 +266,7 @@ const styles = StyleSheet.create({
   image: {
     width: '60%',
     alignSelf: 'center',
-    marginTop: 20,
+    marginTop: -50,
     paddingBottom: -200,
     
   },

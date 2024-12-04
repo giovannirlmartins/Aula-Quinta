@@ -1,10 +1,36 @@
-import React from "react";
-import { View, Text, TextInput, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useState } from "react";
+import { View, Text, TextInput, Image, StyleSheet, TouchableOpacity, AppState } from 'react-native';
 import Colours from '../../../assets/colours';
 import { useNavigation } from "@react-navigation/native";
+import { supabase } from '../../lib/supabase';
+import { Button, Input } from '@rneui/themed';
+
+AppState.addEventListener('change', (state) => {
+  if (state === 'active') {
+    supabase.auth.startAutoRefresh()
+  } else {
+    supabase.auth.stopAutoRefresh()
+  }
+})
 
 export default function SignIn() {
   const navigation = useNavigation();
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [loading, setLoading] = useState(false)
+
+  async function signInWithEmail() {
+    setLoading(true)
+    const { error } = await supabase.auth.signInWithPassword({
+      email: email,
+      password: password,
+    })
+
+    if (error) Alert.alert(error.message)
+      else navigation.navigate('MyApp')
+    setLoading(false)
+  }
+
   return (
     <View style={styles.container}>
         <View style={styles.imageContainer}>
@@ -19,10 +45,14 @@ export default function SignIn() {
             <TextInput
                 placeholder="Usuário"
                 style={styles.input}
+                onChangeText={(text) => setEmail(text)}
+                value={email}
             />
             <TextInput
                 placeholder="Senha"
                 style={styles.input}
+                onChangeText={(text) => setPassword(text)}
+                value={password}
                 secureTextEntry={true}
             />
 
@@ -32,7 +62,8 @@ export default function SignIn() {
 
             <TouchableOpacity 
             style={styles.signin}
-            onPress={() => navigation.navigate('Home')}>
+            onPress={() => signInWithEmail()}
+            >
                 <Text style= {styles.text}>Entrar</Text>
             </TouchableOpacity>
 

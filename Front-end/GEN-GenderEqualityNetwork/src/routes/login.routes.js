@@ -13,6 +13,7 @@ import HomeScreen from "../pages/app/home";
 import PostScreen from "../pages/app/post";
 import ProfileScreen from "../pages/app/profile";
 import SearchScreen from "../pages/app/search";
+import Colours from '../../assets/colours';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -24,12 +25,13 @@ function MyApp() {
             screenOptions={({ route }) => ({
                 tabBarIcon: ({ focused, color, size }) => {
                     let iconName;
+                    let iconSize = focused ? 30 : 20; // Aumenta o tamanho do ícone se estiver selecionado
 
                     // Define os ícones para cada rota
                     if (route.name === 'Home') {
                         iconName = focused ? 'home' : 'home-outline';
                     } else if (route.name === 'Post') {
-                        iconName = focused ? 'add-circle' : 'albums-outline'; 
+                        iconName = focused ? 'albums' : 'albums-outline'; 
                     } else if (route.name === 'Search') {
                         iconName = focused ? 'search' : 'search-outline';
                     } else if (route.name === 'Profile') {
@@ -39,10 +41,14 @@ function MyApp() {
                     // bulb-outline - icone da lampada, pode ser util
 
                     // Retorna o ícone correspondente
-                    return <Ionicons name={iconName} size={size} color={color} />;
+                    return <Ionicons name={iconName} size={iconSize} color={color} />;
                 },
-                tabBarActiveTintColor: 'tomato',
-                tabBarInactiveTintColor: 'gray',
+                tabBarActiveTintColor: Colours.offWhite,
+                tabBarInactiveTintColor: Colours.offWhite,
+                tabBarStyle: {
+                    backgroundColor: Colours.headerColour, // Fundo da barra de navegação
+                    borderTopWidth: 0, // Remove a borda superior (opcional)
+                },
                 headerShown: false, // Remove o cabeçalho de todas as telas no Tab.Navigator
             })}
         >

@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { View, Text, Image, StyleSheet, TouchableOpacity, TextInput, Alert, KeyboardAvoidingView, ScrollView, Platform } from 'react-native';
 import Colours from '../../../assets/colours';
 import { useNavigation } from "@react-navigation/native";
-import SignUp from "../signup";
 
 export default function OngSignUp() {
   const navigation = useNavigation();

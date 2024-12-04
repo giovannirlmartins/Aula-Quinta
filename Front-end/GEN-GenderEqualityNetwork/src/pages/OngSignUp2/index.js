@@ -27,13 +27,11 @@ export default function OngSignUp2() {
   function Validationsign() {
     if(cep != null && logradouro != null && numero != null && bairro != null && cidade != null && estado != null)
       {
-        home();
+        navigation.navigate('MyApp');
       }
     else{
       Alert.alert("Preencha os espaços em branco");   
     }
-    function home() {
-      navigation.navigate("Home")}; 
   }
  
   const fetchAddress = async () => {

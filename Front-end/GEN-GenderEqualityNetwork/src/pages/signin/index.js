@@ -32,7 +32,7 @@ export default function SignIn() {
 
             <TouchableOpacity 
             style={styles.signin}
-            onPress={() => navigation.navigate('Home')}>
+            onPress={() => navigation.navigate('MyApp')}>
                 <Text style= {styles.text}>Entrar</Text>
             </TouchableOpacity>
 

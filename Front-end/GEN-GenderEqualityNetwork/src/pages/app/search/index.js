@@ -12,11 +12,16 @@ import {
   watchPositionAsync,
   LocationAccuracy
 } from 'expo-location';
-import axios from 'axios';
 
 export default function SearchScreen() {
 
+  //contantes para a pesquisa pela IA
   const [selectedValue, setSelectedValue] = useState('');
+  const [searchedValue, setSearchedValue] = useState('');
+  const [input, setInput] = useState("");
+  const [response, setResponse] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
   const [bairro, setBairro] = useState(null);
   const [cidade, setCidade] = useState(null);
   const [estado, setEstado] = useState(null);
@@ -24,6 +29,76 @@ export default function SearchScreen() {
   const [isVisible, setIsVisible] = useState(true);
   const [isVisibleMap, setIsVisibleMap] = useState(true);
   const [isVisibleInfo, setIsVisibleInfo] = useState(false);
+  
+  const atualizarCidade = (searchedValue) => {
+    setCidade(searchedValue); // Usa a função para atualizar o estado.
+  };
+
+  const atualizarInput = (searchedValue) => {
+    setCidade(searchedValue); // Usa a função para atualizar o estado.
+  };
+  
+  // chatgpt desativado
+  // const ChatGPTApp = () => {
+  
+  //   const handleSend = async () => {
+  //     setIsLoading(true);
+  //     setResponse("");
+  
+  //     try {
+  //       const result = await axios.post(
+  //         "https://api.openai.com/v1/chat/completions",
+  //         {
+  //           model: "gpt-3.5-turbo",
+  //           messages: [{ role: "user", content: input }],
+  //         },
+  //         {
+  //           headers: {
+  //             "Content-Type": "application/json",
+  //             Authorization: `Bearer ${OPENAI_API_KEY}`,
+  //           },
+  //         }
+  //       );
+  
+  //       setResponse(result.data.choices[0].message.content);
+  //     } catch (error) {
+  //       console.error("Erro na chamada da API:", error);
+  //       setResponse("Erro ao conectar à API.");
+  //     } finally {
+  //       setIsLoading(false);
+  //     }
+  //   };
+
+    //CONEXÃO COM AZURE DESATIVADA
+    // const handleSend = async () => {
+    //   setIsLoading(true);
+    //   setResponse("");
+  
+    //   try {
+    //     const result = await axios.post(
+    //       AZURE_API_URL,
+    //       {
+    //         messages: [{ role: "user", content: input }],
+    //         temperature: 0.7,
+    //         max_tokens: 500,
+    //       },
+    //       {
+    //         headers: {
+    //           "Content-Type": "application/json",
+    //           "api-key": AZURE_API_KEY, // Cabeçalho exclusivo para Azure OpenAI
+    //         }
+    //       }
+    //     );
+  
+    //     setResponse(result.data.choices[0].message.content);
+    //   } catch (error) {
+    //     console.error("Erro na chamada da API:", error);
+    //     setResponse("Erro ao conectar à API.");
+    //   } finally {
+    //     setIsLoading(false);
+    //   }
+    // };
+  
 
 
   async function requestLocationPermissions() {
@@ -54,28 +129,29 @@ export default function SearchScreen() {
     });
   }, []);
 
-  const fetchAddress = async () => {
-    if (!cep || cep.length < 8) {
-      Alert.alert("Erro", "Por favor, insira um CEP válido com 8 dígitos.");
-      return;
-    }
+  // PESQUISA POR CEP DESATIVADA
+  // const fetchAddress = async () => {
+  //   if (!cep || cep.length < 8) {
+  //     Alert.alert("Erro", "Por favor, insira um CEP válido com 8 dígitos.");
+  //     return;
+  //   }
 
-    try {
-      const response = await axios.get(`https://viacep.com.br/ws/${cep}/json/`);
-      console.log(response.data); // Debug: Verificar retorno da API
-      if (response.data.erro) {
-        Alert.alert("Erro", "CEP inválido ou não encontrado.");
-      } else {
-        setBairro(response.data.bairro || "");
-        setCidade(response.data.localidade || "");
-        setEstado(response.data.uf || "");
-      }
+  //   try {
+  //     const response = await axios.get(`https://viacep.com.br/ws/${cep}/json/`);
+  //     console.log(response.data); // Debug: Verificar retorno da API
+  //     if (response.data.erro) {
+  //       Alert.alert("Erro", "CEP inválido ou não encontrado.");
+  //     } else {
+  //       setBairro(response.data.bairro || "");
+  //       setCidade(response.data.localidade || "");
+  //       setEstado(response.data.uf || "");
+  //     }
     
       
-    } catch (error) {
-      Alert.alert("Erro", "Não foi possível buscar o endereço.");
-    }
-  };
+  //   } catch (error) {
+  //     Alert.alert("Erro", "Não foi possível buscar o endereço.");
+  //   }
+  // };
   
   function searchBy(value) {
     const visibleOptions = ['cep', 'bairro', 'cidade', 'estado'];
@@ -84,20 +160,17 @@ export default function SearchScreen() {
   
 
   function search(){
-    if (selectedValue == 'cep'){
-      fetchAddress();
+    if (selectedValue == 'cidade'){
+      atualizarCidade(searchedValue);
+      console.log('cidade de pesquisa', cidade);
+      setInput(`Índice de feminicídio em ${searchedValue}`);
+      console.log(input);
       setIsVisibleMap(false);
       setIsVisibleInfo(true);
-      searchByBairro();
-      searchByCidade();
-      searchByEstado();
-
+      //handleSend();
     }
   }
 
-  function searchByBairro(){
-    
-  }
 
 
   return (
@@ -147,9 +220,13 @@ export default function SearchScreen() {
             <TextInput 
               style={styles.textInput} 
               placeholder="Digite sua pesquisa"
+              onChangeText={setSearchedValue}
+              value={searchedValue}
             />
             <TouchableOpacity
-              onPress={() => search()}
+              onPress={() => handleSend()
+
+              }
             >
               <FontAwesome name="search" size={20} color={Colours.backgroundColour} style={styles.searchIcon} />
             </TouchableOpacity>          
@@ -177,6 +254,15 @@ export default function SearchScreen() {
             </MapView>
           }
         </View>)}
+
+        {isVisibleInfo && (
+          <View style={styles.dados}>
+            {isLoading ? (
+              <Text style={styles.loading}>Carregando...</Text>
+            ) : (
+              response && <Text style={styles.response}>{response}</Text>
+            )}
+          </View>)}
 
       </ScrollView>
     </View>
@@ -207,13 +293,12 @@ const styles = StyleSheet.create({
   },
   pickerContainer: {
     width: '55%',
-    height: 40,
-    borderWidth: 1,
+    height: 30,
     borderRadius: 16,
     overflow: 'hidden',
     backgroundColor: Colours.lightBlue,
     justifyContent: 'center',
-    marginVertical: 10,
+    marginVertical: 16,
     marginHorizontal: 0,
   },
   picker: {
@@ -254,4 +339,12 @@ const styles = StyleSheet.create({
     marginTop: 10,
     alignSelf: 'center',
   },
-});
+
+  dados:{
+    width:'90%',
+    height: '90%',
+    marginTop: 10,
+    alignSelf: 'center',
+    backgroundColor: Colours.offWhite,
+  }
+})

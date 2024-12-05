@@ -15,7 +15,6 @@ AppState.addEventListener('change', (state) => {
 
 export default function OngSignUp() {
   const navigation = useNavigation();
-  const [idUsuario, setIdUsuario] = useState(null);
   const [ongName, setOngName] = useState(null);
   const [ongCnpj, setOngCnpj] = useState(null);
   const [phone, setPhone] = useState(null);
@@ -58,11 +57,12 @@ export default function OngSignUp() {
   
 
   function validation() {
+    // createId();
     if (ongName && phone && email && emailTester && senha && senhaTester && cep && logradouro && numero && bairro && cidade && estado) {
       if (email === emailTester) {
         if (senha === senhaTester) {
           if (senha.length > 7) {
-            createId();
+            insertData();
           } else {
             Alert.alert("A senha precisa ter no mínimo 8 caracteres");
           }
@@ -81,11 +81,12 @@ export default function OngSignUp() {
     }
   }
 
-  function createId() {
-    setIdUsuario(Math.random());
-    console.log("id criado", idUsuario);
-    insertData();  // SERIAL PRIMARY KEY
-  }
+  // Função de criar ID desativada
+  // function createId() {
+  //   setIdUsuario(Math.random());
+  //   console.log("id criado", idUsuario);
+  //     // SERIAL PRIMARY KEY
+  // }
 
   async function insertData() {
       
@@ -94,7 +95,6 @@ export default function OngSignUp() {
         nome: ongName, 
         telefone: phone,
         email: email,
-        id_usuario: idUsuario,
         cep: cep,
         logradouro: logradouro,
         numero: numero,
@@ -110,6 +110,7 @@ export default function OngSignUp() {
     else {
       Alert.alert('Dados adicionados com sucesso');
       signUp();
+      navigation.navigate('SignIn'); 
     }
   }    
 
@@ -250,8 +251,13 @@ export default function OngSignUp() {
             style={styles.signUpButton}
             onPress={() => validation()}
           >
-            <Text style={styles.textButton}>Próximo</Text>
+            <Text style={styles.textButton}>Cadastrar</Text>
           </TouchableOpacity>
+
+        </View>
+
+        <View style={styles.footer}>
+
         </View>
       </ScrollView>
     </KeyboardAvoidingView>
@@ -299,4 +305,7 @@ const styles = StyleSheet.create({
     color: Colours.offWhite,
     fontWeight: 'bold',
   },
+  footer:{
+    height: 80
+  }
 });
